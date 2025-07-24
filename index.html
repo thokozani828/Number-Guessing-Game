@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🎯 Number Guessing Game</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #00c9ff, #92fe9d);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .game-box {
+      background: #ffffff20;
+      backdrop-filter: blur(15px);
+      border: 1px solid #ffffff30;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      width: 350px;
+      color: white;
+      text-align: center;
+      transform-style: preserve-3d;
+      transform: perspective(1000px);
+      animation: floatUp 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: perspective(1000px) rotateX(5deg) translateY(0);
+      }
+      to {
+        transform: perspective(1000px) rotateX(-5deg) translateY(-10px);
+      }
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      width: 80px;
+      margin: 10px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 12px;
+      border: none;
+      margin: 5px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff4e50, #f9d423);
+      color: white;
+      font-weight: bold;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+    }
+
+    #message {
+      font-size: 16px;
+      margin-top: 20px;
+      min-height: 24px;
+      transition: all 0.3s ease;
+      animation: fadeIn 0.5s;
+    }
+
+    #guessCount {
+      margin-top: 10px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-box">
+    <h2>🎯 Guess The Number</h2>
+    <p>I'm thinking of a number between <strong>1 - 100</strong></p>
+    <input type="number" id="guessInput" min="1" max="100">
+    <br>
+    <button onclick="checkGuess()">Guess</button>
+    <button onclick="resetGame()">Reset</button>
+    <button onclick="giveUp()">Give Up</button>
+    <p id="message"></p>
+    <p id="guessCount">Guesses: 0 / 10</p>
+  </div>
+
+  <script>
+    let randomNumber = Math.floor(Math.random() * 100) + 1;
+    let guesses = 0;
+    let maxGuesses = 10;
+    let gameOver = false;
+
+    function checkGuess() {
+      if (gameOver) return;
+
+      const guess = Number(document.getElementById("guessInput").value);
+      const message = document.getElementById("message");
+      const guessDisplay = document.getElementById("guessCount");
+
+      if (!guess || guess < 1 || guess > 100) {
+        message.textContent = "❗ Enter a number between 1 and 100!";
+        return;
+      }
+
+      guesses++;
+      guessDisplay.textContent = `Guesses: ${guesses} / ${maxGuesses}`;
+
+      if (guess === randomNumber) {
+        message.textContent = "🎉 Correct! You nailed it!";
+        message.style.color = "#00ffcc";
+        gameOver = true;
+      } else if (guesses >= maxGuesses) {
+        message.textContent = `❌ Game Over! It was ${randomNumber}`;
+        message.style.color = "#ff3333";
+        gameOver = true;
+      } else if (guess < randomNumber) {
+        message.textContent = "📉 Too low! Try higher.";
+        message.style.color = "#f0e130";
+      } else {
+        message.textContent = "📈 Too high! Try lower.";
+        message.style.color = "#f0e130";
+      }
+    }
+
+    function resetGame() {
+      randomNumber = Math.floor(Math.random() * 100) + 1;
+      guesses = 0;
+      gameOver = false;
+      document.getElementById("guessInput").value = "";
+      document.getElementById("message").textContent = "";
+      document.getElementById("guessCount").textContent = "Guesses: 0 / 10";
+    }
+
+    function giveUp() {
+      if (!gameOver) {
+        document.getElementById("message").textContent = `😅 The number was ${randomNumber}`;
+        document.getElementById("message").style.color = "#ff6600";
+        gameOver = true;
+      }
+    }
+  </script>
+
+</body>
+</html>
